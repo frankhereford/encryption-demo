@@ -1,0 +1,7 @@
+version: '3'
+services:
+  demo:
+    image: frankinaustin/dev-sync-demo:latest
+    volumes:
+      - .:/app
+    command: bash
