@@ -4,13 +4,14 @@
 - [encryption-demo: Dual Custody Asymmetric Homomorphic Encryption](#encryption-demo-dual-custody-asymmetric-homomorphic-encryption)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
-    - [Giving the demo](#giving-the-demo)
   - [How It Works](#how-it-works)
     - [Key Generation](#key-generation)
     - [Voting](#voting)
     - [Tallying](#tallying)
     - [Revealing Results](#revealing-results)
   - [Getting Started](#getting-started)
+    - [Giving the demo](#giving-the-demo)
+    - [Voting](#voting-1)
   - [Requirements and Parameters](#requirements-and-parameters)
   - [Tech Stack](#tech-stack)
   - [FAQ](#faq)
@@ -18,19 +19,7 @@
 ## Overview
 This demo provides a simplified example of a secure voting system that incorporates dual-custody asymmetric homomorphic encryption. It aims to demonstrate that a fair and verifiable election can be conducted even when the involved parties do not fully trust each other.
 
-### Giving the demo
 
-To give the demo:
-
-```
-docker compose run demo
-```
-
-To vote, run:
-
-```
-docker run -it frankinaustin/dev-sync-demo:latest
-```
 
 
 ## How It Works
@@ -56,9 +45,19 @@ docker run -it frankinaustin/dev-sync-demo:latest
 - The final tally is revealed only when both parties agree to decrypt it.
 
 ## Getting Started
-To initiate the demo, run:
-To cast a vote, execute:
+### Giving the demo
 
+To give the demo:
+
+```
+docker compose run demo
+```
+
+### Voting
+
+```
+docker run -it frankinaustin/dev-sync-demo:latest
+```
 ## Requirements and Parameters
 - Alice and Bob may not trust each other but can cooperate for a fair election.
 - Voters should be able to verify that their vote is counted and remains private.
