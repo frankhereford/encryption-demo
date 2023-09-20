@@ -33,7 +33,7 @@ def main():
     final_tally_alice = full_private_key.decrypt(encrypted_tally_alice)
     final_tally_bob = full_private_key.decrypt(encrypted_tally_bob)
     
-    print(f"Final tally: Alice = {final_tally_alice}, Bob = {final_tally_bob}")
+    print(f"\n\nFinal tally:\n\nAlice = {final_tally_alice}\n\nBob = {final_tally_bob}\n\n")
 
 if __name__ == "__main__":
     main()
