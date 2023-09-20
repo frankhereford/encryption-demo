@@ -12,5 +12,5 @@ RUN pip install requests
 # Copy the rest of your application code
 COPY . /app/
 
-# Run vote.py when the container starts
+# Run vote script when the container starts
 CMD ["python", "2_voting.py"]
