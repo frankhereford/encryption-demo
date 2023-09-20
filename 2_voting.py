@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 # Imports
-import random  # For generating random numbers
-import string  # For string manipulation
 import json  # To work with JSON data
 import hashlib  # For generating SHA-1 hash
 from phe import paillier  # Import the paillier library for encryption
+import base64
+from io import BytesIO
+import qrcode
+import brotli
 
 
 # Function to load public key from stdin (Standard Input)
@@ -30,6 +32,68 @@ def get_vote():
             return vote
         print("Invalid choice. Please vote for Alice or Bob.")
 
+
+def integer_to_base64(integer_value):
+    integer_value = int(integer_value)
+    # Converting integer to bytes
+    int_bytes = integer_value.to_bytes((integer_value.bit_length() + 7) // 8, byteorder='big')
+    # Encoding bytes to base64
+    return base64.b64encode(int_bytes).decode()
+
+def compress_and_generate_qr(data):
+    print("input data length", len(json.dumps(data).encode()))
+
+    # Transform large integers to base64
+    for key in data.keys():
+        original_value = data[key]
+        data[key] = integer_to_base64(original_value)
+        
+        # Print for debugging
+        print(f"{key}: Original value: {original_value}")
+        print(f"{key}: Transformed value: {data[key]}")
+
+    compressed_data = brotli.compress(json.dumps(data).encode())
+    
+    # Step 2: Base64 encode the compressed data to make it URL-safe
+    encoded_data = base64.b64encode(compressed_data).decode()
+    
+    print("Compressed Data length: ", len(encoded_data))
+    
+    # Step 3: Generate a QR code from the base64 encoded data
+
+    # this is cute, but it needs a mighty wide terminal window
+    if False:
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data(encoded_data)
+        qr.make(fit=True)
+        qr_matrix = qr.get_matrix()
+        
+        for row in qr_matrix:
+            print("".join("##" if cell else "  " for cell in row))
+        
+    
+    qr_image = qrcode.make(encoded_data)
+
+    # prepare io buffer of PNG data
+    buffer = BytesIO()
+    qr_image.save(buffer)
+    buffer.seek(0)
+    
+    # Assume `buffer` contains your QR code in PNG format as bytes.
+    buffer.seek(0)
+    png_data = buffer.read()
+    base64_png = base64.b64encode(png_data).decode()
+    data_url = f"data:image/png;base64,{base64_png}"
+
+    print("Copy this into your browser address bar for a QR code of your vote:", data_url)
+
+    
+    buffer.seek(0)
+    with open("output_qr.png", "wb") as f:
+        f.write(buffer.read())
+    
+    buffer.seek(0)
+    return buffer
 
 # Main program logic
 def main():
@@ -69,6 +133,10 @@ def main():
     filename = f"vote_{hash_suffix}.json"
     with open(filename, "w") as f:
         f.write(vote_json)
+
+    compress_and_generate_qr(vote_dict)
+    
+
 
 
 # Entry point of the program
