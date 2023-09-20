@@ -59,7 +59,7 @@ docker compose run demo
 docker run -it frankinaustin/dev-sync-demo:latest
 ```
 ## Requirements and Parameters
-- Alice and Bob may not trust each other but can cooperate for a fair election.
+- Alice and Bob do not trust each other but can cooperate for a fair election.
 - Voters should be able to verify that their vote is counted and remains private.
 - The poll conductor can aggregate the encrypted votes but cannot see the actual results.
 - Decryption and result revelation require the consent of both Alice and Bob.
