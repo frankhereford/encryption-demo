@@ -31,12 +31,6 @@ def get_vote():
         print("Invalid choice. Please vote for Alice or Bob.")
 
 
-# Function to generate a random filename
-def generate_random_filename():
-    random_str = "".join(random.choices(string.hexdigits, k=6))
-    return f"vote_{random_str}.json"
-
-
 # Main program logic
 def main():
     # Load the public key
@@ -72,7 +66,7 @@ def main():
     )
 
     # Save the vote to a file
-    filename = generate_random_filename()
+    filename = f"vote_{hash_suffix}.json"
     with open(filename, "w") as f:
         f.write(vote_json)
 
