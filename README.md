@@ -21,11 +21,13 @@ This demo provides a simplified example of a secure voting system that incorpora
 ### Giving the demo
 
 To give the demo:
+
 ```
 docker compose run demo
 ```
 
 To vote, run:
+
 ```
 docker run -it frankinaustin/dev-sync-demo:latest
 ```
