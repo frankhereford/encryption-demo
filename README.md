@@ -1,4 +1,4 @@
-# encryption-demo: Dual Custody Asymmetric Homomorphic Encryption
+# Dual-custody Asymmetric Homomorphic Encryption
 
 ## Table of Contents
 - [encryption-demo: Dual Custody Asymmetric Homomorphic Encryption](#encryption-demo-dual-custody-asymmetric-homomorphic-encryption)
