@@ -61,38 +61,40 @@ def compress_and_generate_qr(data):
     
     # Step 3: Generate a QR code from the base64 encoded data
 
-    # this is cute, but it needs a mighty wide terminal window
-    if False:
+    # Ask the user if they want to print the QR code to the terminal
+    print_qr_choice = input("Do you want to print the QR code to the terminal? (Yes/Y): ").lower()
+    if print_qr_choice in ['yes', 'y']:
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
         qr.add_data(encoded_data)
         qr.make(fit=True)
         qr_matrix = qr.get_matrix()
-        
+
         for row in qr_matrix:
             print("".join("##" if cell else "  " for cell in row))
+    
+    # Ask the user if they want to generate a URL-safe QR code
+    url_qr_choice = input("Do you want to generate a QR code URL to put in your browser address bar? (Yes/Y): ").lower()
+    if url_qr_choice in ['yes', 'y']:
+        qr_image = qrcode.make(encoded_data)
         
-    
-    qr_image = qrcode.make(encoded_data)
+        # prepare io buffer of PNG data
+        buffer = BytesIO()
+        qr_image.save(buffer)
+        buffer.seek(0)
+        
+        # Assume `buffer` contains your QR code in PNG format as bytes.
+        buffer.seek(0)
+        png_data = buffer.read()
+        base64_png = base64.b64encode(png_data).decode()
+        data_url = f"data:image/png;base64,{base64_png}"
 
-    # prepare io buffer of PNG data
-    buffer = BytesIO()
-    qr_image.save(buffer)
-    buffer.seek(0)
-    
-    # Assume `buffer` contains your QR code in PNG format as bytes.
-    buffer.seek(0)
-    png_data = buffer.read()
-    base64_png = base64.b64encode(png_data).decode()
-    data_url = f"data:image/png;base64,{base64_png}"
-
-    print("Copy this into your browser address bar for a QR code of your vote:", data_url)
-
-    
-    buffer.seek(0)
-    with open("output_qr.png", "wb") as f:
-        f.write(buffer.read())
-    
-    buffer.seek(0)
+        print("Copy this into your browser address bar for a QR code of your vote:", data_url)
+        
+        buffer.seek(0)
+        with open("output_qr.png", "wb") as f:
+            f.write(buffer.read())
+        
+        buffer.seek(0)
     return buffer
 
 # Main program logic
