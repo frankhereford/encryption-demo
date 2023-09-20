@@ -1,66 +1,70 @@
 #!/usr/bin/env python3
 
-import random
-import string
+# Imports
+import random  # For generating random numbers
+import string  # For string manipulation
+import json  # To work with JSON data
+import hashlib  # For generating SHA-1 hash
+from phe import paillier  # Import the paillier library for encryption
 
-from phe import paillier
-import json
-import hashlib
-
+# Function to load public key from stdin (Standard Input)
 def load_public_key_from_stdin():
     key_data_str = input("Please provide the public key as JSON: ")
     key_data = json.loads(key_data_str)
     return paillier.PaillierPublicKey(n=key_data['n'])
 
+# Function to generate SHA-1 hash of given data
 def generate_sha1_hash(data):
     sha1 = hashlib.sha1()
     sha1.update(data.strip().encode())
     return sha1.hexdigest()[-6:]
 
+# Function to get the user's vote
 def get_vote():
     while True:
         vote = input("\n\nVote for Alice or Bob: ").lower()
         if vote in ['alice', 'bob']:
             return vote
-        else:
-            print("Invalid choice. Please vote for Alice or Bob.")
+        print("Invalid choice. Please vote for Alice or Bob.")
 
+# Function to generate a random filename
 def generate_random_filename():
     random_str = ''.join(random.choices(string.hexdigits, k=6))
-    filename = f"vote_{random_str}.json"
-    return filename
+    return f"vote_{random_str}.json"
 
+# Main program logic
 def main():
-    # Step 1: Load the public key
+    # Load the public key
     public_key = load_public_key_from_stdin()
 
-    # Step 2: Get the user's vote
+    # Get the user's vote
     vote = get_vote()
 
-    # Step 3: Encrypt the votes
-    vote_for_alice = 1 if vote == 'alice' else 0
-    vote_for_bob = 1 if vote == 'bob' else 0
+    # Encrypt the vote based on the chosen candidate
+    encrypted_vote_alice = public_key.encrypt(1 if vote == 'alice' else 0)
+    encrypted_vote_bob = public_key.encrypt(1 if vote == 'bob' else 0)
 
-    encrypted_vote_alice = public_key.encrypt(vote_for_alice)
-    encrypted_vote_bob = public_key.encrypt(vote_for_bob)
-
-    # Step 4: Put encrypted votes into dictionary
+    # Store encrypted votes in a dictionary
     vote_dict = {
         'alice': str(encrypted_vote_alice.ciphertext()),
         'bob': str(encrypted_vote_bob.ciphertext())
     }
 
-    # Step 5: Serialize to JSON and print
+    # Serialize the dictionary to JSON
     vote_json = json.dumps(vote_dict)
+    
+    # Output the encrypted vote
     print("Here is your encrypted vote. Please provide it back to the person running the tally:\n\n", vote_json, "\n\n")
 
-    # Generate SHA-1 hash and print last 6 characters
+    # Generate SHA-1 hash to allow voters to verify their vote
     hash_suffix = generate_sha1_hash(vote_json)
     print(f"Last 6 characters of SHA-1 hash of encrypted vote. Remember this and you can verify that your vote goes in.\n\n{hash_suffix}\n\n")
 
-    filename = f"vote_{hash_suffix}.json"
+    # Save the vote to a file
+    filename = generate_random_filename()
     with open(filename, 'w') as f:
         f.write(vote_json)
 
+# Entry point of the program
 if __name__ == "__main__":
     main()
