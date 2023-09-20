@@ -6,11 +6,13 @@ import os  # To handle OS-level operations like deleting files
 from phe import paillier  # Import the paillier library for encryption
 import json  # To work with JSON formatted data
 
+
 # Function to remove all JSON files in the current directory
 def remove_json_files():
     # Iterate through each file ending with .json
     for filename in glob.glob("*.json"):
         os.remove(filename)  # Remove the file
+
 
 # Remove existing JSON files to start fresh
 remove_json_files()
@@ -19,30 +21,24 @@ remove_json_files()
 public_key, private_key = paillier.generate_paillier_keypair()
 
 # Convert the generated keys to dictionary format for easier handling
-public_key_dict = {
-    'g': public_key.g,
-    'n': public_key.n
-}
-private_key_dict = {
-    'p': private_key.p,
-    'q': private_key.q
-}
+public_key_dict = {"g": public_key.g, "n": public_key.n}
+private_key_dict = {"p": private_key.p, "q": private_key.q}
 
 # Serialize (convert to JSON format) parts of the private key
 # We separate p and q components for multi-party computation
-party_a_key_part = json.dumps({'p': private_key_dict["p"]})
-party_b_key_part = json.dumps({'q': private_key_dict["q"]})
+party_a_key_part = json.dumps({"p": private_key_dict["p"]})
+party_b_key_part = json.dumps({"q": private_key_dict["q"]})
 public_key_json = json.dumps(public_key_dict)
 
 # Export the partial keys as JSON files
 # Party A gets 'p', and Party B gets 'q'
-with open('party_a_key.json', 'w') as f:
+with open("party_a_key.json", "w") as f:
     f.write(party_a_key_part)
-with open('party_b_key.json', 'w') as f:
+with open("party_b_key.json", "w") as f:
     f.write(party_b_key_part)
 
 # Export the public key as a JSON file
-with open('public_key.json', 'w') as f:
+with open("public_key.json", "w") as f:
     f.write(public_key_json)
 
 # Output instructions for key distribution
