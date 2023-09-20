@@ -34,22 +34,22 @@ docker run -it frankinaustin/dev-sync-demo:latest
 ## How It Works
 
 ### Key Generation
-- Script: 1_key_generation.py
+- `Script: 1_key_generation.py`
 - Generates a pair of public and private keys using Paillier encryption.
 - The private key is divided into two parts: one for Alice and one for Bob.
 ### Voting
-- Script: 2_voting.py
+- `Script: 2_voting.py`
 - Voters can cast their votes for either Alice or Bob.
 - Each vote is encrypted using the public key generated during key generation.
 - Encrypted votes are saved as .json files and hashed for verification.
 
 ### Tallying
-- Script: 3_tally_the_results.py
+- `Script: 3_tally_the_results.py`
 - Aggregates the encrypted votes.
 - The poll conductor can tally the votes without revealing the actual vote counts.
 
 ### Revealing Results
-- Script: 4_reveal_results.py
+- `Script: 4_reveal_results.py`
 - Both Alice's and Bob's partial keys are needed to decrypt the final tally.
 - The final tally is revealed only when both parties agree to decrypt it.
 
