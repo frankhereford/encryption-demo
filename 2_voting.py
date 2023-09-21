@@ -76,10 +76,6 @@ def compress_and_generate_qr(data):
     print_qr_choice = input(
         f"Do you want to print the QR code to the terminal? (Yes/Y) [Recommended Terminal Width: {estimated_qr_width}, Your Current Terminal Width: {current_terminal_width}]: "
     ).lower()
-
-
-    # Ask the user if they want to print the QR code to the terminal
-    #print_qr_choice = input("Do you want to print the QR code to the terminal? (Yes/Y): ").lower()
     if print_qr_choice in ['yes', 'y']:
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
         qr.add_data(encoded_data)
@@ -89,8 +85,18 @@ def compress_and_generate_qr(data):
         for row in qr_matrix:
             print("".join("##" if cell else "  " for cell in row))
     
+    
+
+    # Step 2: Base64 encode the compressed data to make it URL-safe
+    encoded_data = base64.b64encode(compressed_data).decode()
+
+    # Calculate the length of the encoded data
+    encoded_data_length = len(encoded_data)
+    
     # Ask the user if they want to generate a URL-safe QR code
-    url_qr_choice = input("Do you want to generate a QR code URL to put in your browser address bar? (Yes/Y): ").lower()
+    url_qr_choice = input(
+        f"Do you want to generate a QR code URL to put in your browser address bar? (Yes/Y) [Encoded Data Length: {encoded_data_length} bytes]: "
+    ).lower()
     if url_qr_choice in ['yes', 'y']:
         qr_image = qrcode.make(encoded_data)
         
