@@ -7,7 +7,7 @@ WORKDIR /app
 # Install phe library for Paillier encryption
 RUN pip install phe
 
-RUN pip install requests phe qrcode brotli PIL
+RUN pip install requests phe qrcode brotli Pillow
 
 # Copy the rest of your application code
 COPY . /app/
