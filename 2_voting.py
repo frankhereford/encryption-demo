@@ -51,10 +51,9 @@ def main():
     with open(filename, "w") as f:
         f.write(vote_json)
 
-    print(
-        """The remainder of the program concerns making a transferable copy of your vote as a QR code.
-It generates secure representation of your vote as a QR code which could be printed out and dropped in the ballot box.\n"""
-    )
+    print("The remainder of the program concerns making a transferable copy of your vote as a QR code.")
+    print("It generates secure representation of your vote as a QR code which could be printed out and dropped in the ballot box.\n")
+
     qr_choice = input("Do you want to see your vote as a QR code? (Y/N)\n").lower()
     if qr_choice in ["yes", "y"]:
         compress_and_generate_qr(vote_dict)
@@ -192,8 +191,9 @@ def compress_and_generate_qr(data):
         data_url = f"data:image/png;base64,{base64_png}"
 
         print(
-            "Copy this into your browser address bar for a QR code of your vote:\n",
+            "Copy this into your browser address bar for a QR code of your vote:\n\n",
             data_url,
+            "\n\n"
         )
 
         buffer.seek(0)
