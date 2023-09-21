@@ -1,2 +1,7 @@
 *json
 *png
+*yaml
+Dockerfile
+.git
+.dockerignore
+.gitignore
