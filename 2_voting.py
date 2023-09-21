@@ -11,6 +11,54 @@ import qrcode
 import brotli
 from PIL import Image
 
+# Main program logic
+def main():
+    # Load the public key
+    public_key = load_public_key_from_stdin()
+
+    # Get the user's vote
+    vote = get_vote()
+
+    # Encrypt the vote based on the chosen candidate
+    encrypted_vote_alice = public_key.encrypt(1 if vote == "alice" else 0)
+    encrypted_vote_bob = public_key.encrypt(1 if vote == "bob" else 0)
+
+    # Store encrypted votes in a dictionary
+    vote_dict = {
+        "alice": str(encrypted_vote_alice.ciphertext()),
+        "bob": str(encrypted_vote_bob.ciphertext()),
+    }
+
+    # Serialize the dictionary to JSON
+    vote_json = json.dumps(vote_dict)
+
+    # Output the encrypted vote
+    print(
+        "Here is your encrypted vote. Please provide it back to the person running the tally:\n\n",
+        vote_json,
+        "\n\n",
+    )
+
+    # Generate SHA-1 hash to allow voters to verify their vote
+    hash_suffix = generate_sha1_hash(vote_json)
+    print(
+        f"Last 6 characters of SHA-1 hash of encrypted vote. Remember this and you can verify that your vote goes in.\n\n{hash_suffix}\n\n"
+    )
+
+    # Save the vote to a file
+    filename = f"vote_{hash_suffix}.json"
+    with open(filename, "w") as f:
+        f.write(vote_json)
+    
+
+    print("""The remainder of the program concerns making a physical copy of your vote as a QR code.
+It generates secure representation of your vote as a QR code which could be printed out and dropped in the ballot box.\n""")
+    qr_choice = input("Do you want to see your vote as a QR code? (Y/N)").lower()
+    if qr_choice in ['yes', 'y']:
+        compress_and_generate_qr(vote_dict)
+    
+
+
 
 # Function to load public key from stdin
 def load_public_key_from_stdin():
@@ -33,6 +81,15 @@ def get_vote():
         if vote in ["alice", "bob"]:
             return vote
         print("Invalid choice. Please vote for Alice or Bob.")
+
+
+
+
+
+
+# 🛑 
+
+# 👇 Everything from here out is fluff. It is concerned with making a QR code / physical copy of the vote.
 
 
 def integer_to_base64(integer_value):
@@ -143,55 +200,6 @@ def compress_and_generate_qr(data):
         
         buffer.seek(0)
     return buffer
-
-# Main program logic
-def main():
-    # Load the public key
-    public_key = load_public_key_from_stdin()
-
-    # Get the user's vote
-    vote = get_vote()
-
-    # Encrypt the vote based on the chosen candidate
-    encrypted_vote_alice = public_key.encrypt(1 if vote == "alice" else 0)
-    encrypted_vote_bob = public_key.encrypt(1 if vote == "bob" else 0)
-
-    # Store encrypted votes in a dictionary
-    vote_dict = {
-        "alice": str(encrypted_vote_alice.ciphertext()),
-        "bob": str(encrypted_vote_bob.ciphertext()),
-    }
-
-    # Serialize the dictionary to JSON
-    vote_json = json.dumps(vote_dict)
-
-    # Output the encrypted vote
-    print(
-        "Here is your encrypted vote. Please provide it back to the person running the tally:\n\n",
-        vote_json,
-        "\n\n",
-    )
-
-    # Generate SHA-1 hash to allow voters to verify their vote
-    hash_suffix = generate_sha1_hash(vote_json)
-    print(
-        f"Last 6 characters of SHA-1 hash of encrypted vote. Remember this and you can verify that your vote goes in.\n\n{hash_suffix}\n\n"
-    )
-
-
-    # Save the vote to a file
-    filename = f"vote_{hash_suffix}.json"
-    with open(filename, "w") as f:
-        f.write(vote_json)
-    
-
-
-    print("""The remainder of the program concerns making a physical copy of your vote as a QR code.
-It generates secure representation of your vote as a QR code which could be printed out and dropped in the ballot box.\n""")
-    qr_choice = input("Do you want to see your vote as a QR code? (Y/N)").lower()
-    if qr_choice in ['yes', 'y']:
-        compress_and_generate_qr(vote_dict)
-    
 
 
 
