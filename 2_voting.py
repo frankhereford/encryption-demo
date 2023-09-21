@@ -35,7 +35,7 @@ def main():
 
     # Output the encrypted vote
     print(
-        "Here is your encrypted vote. Please provide it back to the person running the tally:\n\n",
+        "\nHere is your encrypted vote. Please provide it back to the person running the tally:\n\n",
         vote_json,
         "\n\n",
     )
@@ -43,7 +43,7 @@ def main():
     # Generate SHA-1 hash to allow voters to verify their vote
     hash_suffix = generate_sha1_hash(vote_json)
     print(
-        f"Last 6 characters of SHA-1 hash of encrypted vote. Remember this and you can verify that your vote goes in.\n\n{hash_suffix}\n\n"
+        f"Last 6 characters of SHA-1 hash of your encrypted vote. Remember this and you can verify that your vote goes in.\n\n{hash_suffix}\n\n"
     )
 
     # Save the vote to a file
@@ -52,17 +52,17 @@ def main():
         f.write(vote_json)
 
     print(
-        """The remainder of the program concerns making a physical copy of your vote as a QR code.
+        """The remainder of the program concerns making a transferable copy of your vote as a QR code.
 It generates secure representation of your vote as a QR code which could be printed out and dropped in the ballot box.\n"""
     )
-    qr_choice = input("Do you want to see your vote as a QR code? (Y/N)").lower()
+    qr_choice = input("Do you want to see your vote as a QR code? (Y/N)\n").lower()
     if qr_choice in ["yes", "y"]:
         compress_and_generate_qr(vote_dict)
 
 
 # Function to load public key from stdin
 def load_public_key_from_stdin():
-    key_data_str = input("Please provide the public key as JSON: ")
+    key_data_str = input("Please provide the public key as JSON:\n")
     key_data = json.loads(key_data_str)
     return paillier.PaillierPublicKey(n=key_data["n"])
 
@@ -77,7 +77,7 @@ def generate_sha1_hash(data):
 # Function to get the user's vote
 def get_vote():
     while True:
-        vote = input("\n\nVote for Alice or Bob: ").lower()
+        vote = input("\n\nVote for Alice or Bob:\n").lower()
         if vote in ["alice", "bob"]:
             return vote
         print("Invalid choice. Please vote for Alice or Bob.")
@@ -149,7 +149,7 @@ def compress_and_generate_qr(data):
 
     # Ask the user if they want to print the QR code to the terminal
     print_qr_choice = input(
-        f"Do you want to print the QR code to the terminal? (Y/N) [Recommended Terminal Width: {estimated_qr_width}, Your Current Terminal Width: {current_terminal_width}]: "
+        f"Do you want to print the QR code to the terminal? (Y/N) [Recommended Terminal Width: {estimated_qr_width}, Your Current Terminal Width: {current_terminal_width}]:\n"
     ).lower()
     if print_qr_choice in ["yes", "y"]:
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -168,7 +168,7 @@ def compress_and_generate_qr(data):
 
     # Ask the user if they want to generate a URL-safe QR code
     url_qr_choice = input(
-        f"Do you want to generate a QR code URL to put in your browser address bar? (Y/N) [Encoded Data Length: {encoded_data_length} bytes]: "
+        f"Do you want to generate a QR code URL to put in your browser address bar? (Y/N) [Encoded Data Length: {encoded_data_length} bytes]:\n"
     ).lower()
     if url_qr_choice in ["yes", "y"]:
         qr_image = qrcode.make(encoded_data)
@@ -192,7 +192,7 @@ def compress_and_generate_qr(data):
         data_url = f"data:image/png;base64,{base64_png}"
 
         print(
-            "Copy this into your browser address bar for a QR code of your vote:",
+            "Copy this into your browser address bar for a QR code of your vote:\n",
             data_url,
         )
 
