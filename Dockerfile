@@ -4,10 +4,8 @@ FROM python:latest
 # Set the working directory
 WORKDIR /app
 
-# Install phe library for Paillier encryption
-RUN pip install phe
-
-RUN pip install requests phe qrcode brotli Pillow
+# Install phe library for Paillier encryption & others
+RUN pip install phe requests phe qrcode brotli Pillow
 
 # Copy the rest of your application code
 COPY . /app/
