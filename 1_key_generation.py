@@ -12,6 +12,8 @@ def remove_json_files():
     # Iterate through each file ending with .json
     for filename in glob.glob("*.json"):
         os.remove(filename)  # Remove the file
+    for filename in glob.glob("*.png"):
+        os.remove(filename)  # Remove the file
 
 
 # Remove existing JSON files to start fresh
