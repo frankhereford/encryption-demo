@@ -9,9 +9,10 @@ import base64
 from io import BytesIO
 import qrcode
 import brotli
+from PIL import Image
 
 
-# Function to load public key from stdin (Standard Input)
+# Function to load public key from stdin
 def load_public_key_from_stdin():
     key_data_str = input("Please provide the public key as JSON: ")
     key_data = json.loads(key_data_str)
@@ -40,6 +41,21 @@ def integer_to_base64(integer_value):
     int_bytes = integer_value.to_bytes((integer_value.bit_length() + 7) // 8, byteorder='big')
     # Encoding bytes to base64
     return base64.b64encode(int_bytes).decode()
+
+def compress_and_resize_png(png_bytes, compression_level=9, resize_factor=0.40):
+    # Load the original PNG image from bytes
+    original_image = Image.open(BytesIO(png_bytes))
+    
+    # Resize the image
+    new_size = tuple([int(dim * resize_factor) for dim in original_image.size])
+    resized_image = original_image.resize(new_size)
+    
+    # Save the compressed and resized image to bytes
+    output_buffer = BytesIO()
+    resized_image.save(output_buffer, format='PNG', compress_level=compression_level)
+    compressed_resized_bytes = output_buffer.getvalue()
+    
+    return compressed_resized_bytes
 
 def compress_and_generate_qr(data):
     # print("input data length", len(json.dumps(data).encode()))
@@ -74,7 +90,7 @@ def compress_and_generate_qr(data):
 
     # Ask the user if they want to print the QR code to the terminal
     print_qr_choice = input(
-        f"Do you want to print the QR code to the terminal? (Yes/Y) [Recommended Terminal Width: {estimated_qr_width}, Your Current Terminal Width: {current_terminal_width}]: "
+        f"Do you want to print the QR code to the terminal? (Y/N) [Recommended Terminal Width: {estimated_qr_width}, Your Current Terminal Width: {current_terminal_width}]: "
     ).lower()
     if print_qr_choice in ['yes', 'y']:
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -95,7 +111,7 @@ def compress_and_generate_qr(data):
     
     # Ask the user if they want to generate a URL-safe QR code
     url_qr_choice = input(
-        f"Do you want to generate a QR code URL to put in your browser address bar? (Yes/Y) [Encoded Data Length: {encoded_data_length} bytes]: "
+        f"Do you want to generate a QR code URL to put in your browser address bar? (Y/N) [Encoded Data Length: {encoded_data_length} bytes]: "
     ).lower()
     if url_qr_choice in ['yes', 'y']:
         qr_image = qrcode.make(encoded_data)
@@ -104,6 +120,14 @@ def compress_and_generate_qr(data):
         buffer = BytesIO()
         qr_image.save(buffer)
         buffer.seek(0)
+        
+        # Now compress and resize the PNG
+        original_png_bytes = buffer.read()
+        compressed_resized_bytes = compress_and_resize_png(original_png_bytes)
+        
+        # Replace the original PNG bytes with the compressed and resized bytes
+        buffer = BytesIO(compressed_resized_bytes)
+    
         
         # Assume `buffer` contains your QR code in PNG format as bytes.
         buffer.seek(0)
@@ -154,12 +178,19 @@ def main():
         f"Last 6 characters of SHA-1 hash of encrypted vote. Remember this and you can verify that your vote goes in.\n\n{hash_suffix}\n\n"
     )
 
+
     # Save the vote to a file
     filename = f"vote_{hash_suffix}.json"
     with open(filename, "w") as f:
         f.write(vote_json)
+    
 
-    compress_and_generate_qr(vote_dict)
+
+    print("""The remainder of the program concerns making a physical copy of your vote as a QR code.
+It generates secure representation of your vote as a QR code which could be printed out and dropped in the ballot box.\n""")
+    qr_choice = input("Do you want to see your vote as a QR code? (Y/N)").lower()
+    if qr_choice in ['yes', 'y']:
+        compress_and_generate_qr(vote_dict)
     
 
 
