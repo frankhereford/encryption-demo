@@ -41,7 +41,7 @@ def integer_to_base64(integer_value):
     return base64.b64encode(int_bytes).decode()
 
 def compress_and_generate_qr(data):
-    print("input data length", len(json.dumps(data).encode()))
+    # print("input data length", len(json.dumps(data).encode()))
 
     # Transform large integers to base64
     for key in data.keys():
@@ -49,15 +49,15 @@ def compress_and_generate_qr(data):
         data[key] = integer_to_base64(original_value)
         
         # Print for debugging
-        print(f"{key}: Original value: {original_value}")
-        print(f"{key}: Transformed value: {data[key]}")
+        # print(f"{key}: Original value: {original_value}")
+        # print(f"{key}: Transformed value: {data[key]}")
 
     compressed_data = brotli.compress(json.dumps(data).encode())
     
     # Step 2: Base64 encode the compressed data to make it URL-safe
     encoded_data = base64.b64encode(compressed_data).decode()
     
-    print("Compressed Data length: ", len(encoded_data))
+    # print("Compressed Data length: ", len(encoded_data))
     
     # Step 3: Generate a QR code from the base64 encoded data
 
