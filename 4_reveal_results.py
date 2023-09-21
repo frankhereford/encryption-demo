@@ -17,7 +17,7 @@ def load_partial_key_from_stdin(label):
 def main():
     # Load the encrypted tally for the election
     tally_data_str = input(
-        "Please provide the encrypted tallies for Alice and Bob as JSON: "
+        "Please provide the encrypted tally for the election between Alice and Bob as JSON: "
     )
     tally_data = json.loads(tally_data_str)
 
@@ -39,7 +39,7 @@ def main():
         public_key=public_key, p=int(partial_key_a["p"]), q=int(partial_key_b["q"])
     )
 
-    # Decrypt the final tallies and display them
+    # Decrypt the final tally and display them
     final_tally_alice = full_private_key.decrypt(encrypted_tally_alice)
     final_tally_bob = full_private_key.decrypt(encrypted_tally_bob)
 

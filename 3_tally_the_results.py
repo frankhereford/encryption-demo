@@ -57,7 +57,7 @@ def main():
         "bob": str(encrypted_tally_bob.ciphertext()),
     }
     tally_json = json.dumps(tally_dict)
-    print("Final encrypted tally:", tally_json)
+    print("\n\nFinal encrypted tally:\n\n", tally_json, "\n\n")
 
     # Save the final encrypted tally to a JSON file
     with open("encrypted_tally.json", "w") as f:
