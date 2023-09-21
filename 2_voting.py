@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Imports
+import os
 import json  # To work with JSON data
 import hashlib  # For generating SHA-1 hash
 from phe import paillier  # Import the paillier library for encryption
@@ -61,8 +62,24 @@ def compress_and_generate_qr(data):
     
     # Step 3: Generate a QR code from the base64 encoded data
 
+    # Estimate QR code width
+    qr = qrcode.QRCode(version=1)
+    qr.add_data(json.dumps(data))
+    qr.make(fit=True)
+    estimated_qr_width = len(qr.get_matrix()[0]) * 2  # 2 characters for each cell in the QR code
+
+    # Get current terminal width
+    rows, columns = os.popen("stty size", "r").read().split()
+    current_terminal_width = int(columns)
+
     # Ask the user if they want to print the QR code to the terminal
-    print_qr_choice = input("Do you want to print the QR code to the terminal? (Yes/Y): ").lower()
+    print_qr_choice = input(
+        f"Do you want to print the QR code to the terminal? (Yes/Y) [Recommended Terminal Width: {estimated_qr_width}, Your Current Terminal Width: {current_terminal_width}]: "
+    ).lower()
+
+
+    # Ask the user if they want to print the QR code to the terminal
+    #print_qr_choice = input("Do you want to print the QR code to the terminal? (Yes/Y): ").lower()
     if print_qr_choice in ['yes', 'y']:
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
         qr.add_data(encoded_data)
