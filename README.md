@@ -37,7 +37,7 @@ This demo provides a simplified example of a secure voting system that incorpora
 ### Tallying
 - Script: `3_tally_the_results.py`
 - Aggregates the encrypted votes.
-- The poll conductor can tally the votes without revealing (to themselves!) the actual vote counts.
+- The poll conductor can tally the votes without revealing (to themselves!) the actual votes cast.
 
 ### Revealing Results
 - Script: `4_reveal_results.py`
