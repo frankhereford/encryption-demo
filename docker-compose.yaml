@@ -1,7 +1,60 @@
-version: '3'
 services:
   demo:
     image: frankinaustin/dev-sync-demo:latest
     volumes:
       - .:/app
     command: bash
+
+  certbot:
+    image: certbot/dns-route53
+    env_file: .env
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+    command: >
+      certonly
+      --dns-route53
+      -d encryption-demo.frankhereford.com
+      --email frank.hereford@austintexas.gov
+      --agree-tos
+      --non-interactive
+    restart: "no"
+
+  haproxy:
+    build:
+      context: ./haproxy
+    user: root
+    ports:
+      - "16443:16443"
+    volumes:
+      - letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      certbot:
+        condition: service_completed_successfully
+      web:
+        condition: service_started
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  web-dev:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    command: sh -c "npm install && npx next dev"
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev
+
+volumes:
+  letsencrypt:
