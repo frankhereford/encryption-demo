@@ -216,6 +216,20 @@ button.secondary:hover:not(:disabled) {
   to { transform: rotate(360deg); }
 }
 
+.name-inputs {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.name-field {
+  flex: 1;
+}
+
+.name-field label {
+  margin-top: 0;
+}
+
 .label-row {
   display: flex;
   align-items: baseline;

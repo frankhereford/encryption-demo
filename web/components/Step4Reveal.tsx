@@ -27,7 +27,7 @@ export default function Step4Reveal() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
   const [error, setError] = useState('');
-  const { keys } = useKeys();
+  const { keys, aliceName, bobName } = useKeys();
 
   const reveal = async () => {
     setLoading(true);
@@ -81,7 +81,7 @@ export default function Step4Reveal() {
         <span className="step-title">Reveal Results</span>
       </div>
       <p className="step-desc">
-        Both Alice and Bob must provide their key parts to reconstruct the private key and decrypt the
+        Both {aliceName} and {bobName} must provide their key parts to reconstruct the private key and decrypt the
         tally. Either party withholding their key prevents decryption entirely.
       </p>
 
@@ -105,7 +105,7 @@ export default function Step4Reveal() {
       />
 
       <div className="label-row">
-        <label>Alice&apos;s Key Part (JSON — contains p)</label>
+        <label>{aliceName}&apos;s Key Part (JSON — contains p)</label>
         {keys && <button className="populate-btn" onClick={() => setAliceKeyStr(keys.aliceJson)}>Populate</button>}
       </div>
       <textarea
@@ -116,7 +116,7 @@ export default function Step4Reveal() {
       />
 
       <div className="label-row">
-        <label>Bob&apos;s Key Part (JSON — contains q)</label>
+        <label>{bobName}&apos;s Key Part (JSON — contains q)</label>
         {keys && <button className="populate-btn" onClick={() => setBobKeyStr(keys.bobJson)}>Populate</button>}
       </div>
       <textarea
@@ -138,11 +138,11 @@ export default function Step4Reveal() {
           <h4>Final Results</h4>
           <div className="tally-result">
             <div className={`tally-candidate${winner === 'alice' ? ' winner' : ''}`}>
-              <div className="name">Alice</div>
+              <div className="name">{aliceName}</div>
               <div className="count">{result.alice}</div>
             </div>
             <div className={`tally-candidate${winner === 'bob' ? ' winner' : ''}`}>
-              <div className="name">Bob</div>
+              <div className="name">{bobName}</div>
               <div className="count">{result.bob}</div>
             </div>
           </div>

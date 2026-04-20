@@ -13,7 +13,7 @@ async function sha1Last6(str: string): Promise<string> {
 export default function Step2Vote() {
   const [pubKeyStr, setPubKeyStr] = useState('');
   const [vote, setVote] = useState<'alice' | 'bob' | null>(null);
-  const { keys } = useKeys();
+  const { keys, aliceName, bobName } = useKeys();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ voteJson: string; hash: string } | null>(null);
   const [error, setError] = useState('');
@@ -74,13 +74,13 @@ export default function Step2Vote() {
           className={`vote-btn${vote === 'alice' ? ' selected' : ''}`}
           onClick={() => setVote('alice')}
         >
-          Alice
+          {aliceName}
         </button>
         <button
           className={`vote-btn${vote === 'bob' ? ' selected' : ''}`}
           onClick={() => setVote('bob')}
         >
-          Bob
+          {bobName}
         </button>
       </div>
 

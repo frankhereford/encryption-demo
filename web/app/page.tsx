@@ -1,4 +1,5 @@
 import { KeyProvider } from '@/components/KeyContext';
+import Step0Names from '@/components/Step0Names';
 import Step1KeyGen from '@/components/Step1KeyGen';
 import Step2Vote from '@/components/Step2Vote';
 import Step3Tally from '@/components/Step3Tally';
@@ -12,6 +13,7 @@ export default function Home() {
         Dual-custody Paillier encryption · all crypto runs client-side in your browser
       </p>
       <KeyProvider>
+        <Step0Names />
         <Step1KeyGen />
         <Step2Vote />
         <Step3Tally />

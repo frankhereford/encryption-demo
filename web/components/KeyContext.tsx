@@ -10,11 +10,28 @@ interface SharedKeys {
 const KeyContext = createContext<{
   keys: SharedKeys | null;
   setKeys: (k: SharedKeys) => void;
-}>({ keys: null, setKeys: () => {} });
+  aliceName: string;
+  bobName: string;
+  setAliceName: (n: string) => void;
+  setBobName: (n: string) => void;
+}>({
+  keys: null,
+  setKeys: () => {},
+  aliceName: 'Alice',
+  bobName: 'Bob',
+  setAliceName: () => {},
+  setBobName: () => {},
+});
 
 export function KeyProvider({ children }: { children: React.ReactNode }) {
   const [keys, setKeys] = useState<SharedKeys | null>(null);
-  return <KeyContext.Provider value={{ keys, setKeys }}>{children}</KeyContext.Provider>;
+  const [aliceName, setAliceName] = useState('Alice');
+  const [bobName, setBobName] = useState('Bob');
+  return (
+    <KeyContext.Provider value={{ keys, setKeys, aliceName, bobName, setAliceName, setBobName }}>
+      {children}
+    </KeyContext.Provider>
+  );
 }
 
 export function useKeys() {

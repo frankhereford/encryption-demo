@@ -31,7 +31,7 @@ export default function Step1KeyGen() {
   const [loading, setLoading] = useState(false);
   const [keys, setKeys] = useState<Keys | null>(null);
   const [error, setError] = useState('');
-  const { setKeys: setSharedKeys } = useKeys();
+  const { setKeys: setSharedKeys, aliceName, bobName } = useKeys();
 
   const generate = async () => {
     setLoading(true);
@@ -81,8 +81,8 @@ export default function Step1KeyGen() {
         <span className="step-title">Key Generation</span>
       </div>
       <p className="step-desc">
-        Generate a 2048-bit Paillier public/private keypair. The private key is split — Alice holds{' '}
-        <em>p</em>, Bob holds <em>q</em>. Neither can decrypt alone.
+        Generate a 2048-bit Paillier public/private keypair. The private key is split — {aliceName} holds{' '}
+        <em>p</em>, {bobName} holds <em>q</em>. Neither can decrypt alone.
       </p>
 
       <button onClick={generate} disabled={loading}>
@@ -108,7 +108,7 @@ export default function Step1KeyGen() {
 
           <div className="output-row">
             <div className="output-label">
-              Alice&apos;s Key Part — keep secret — fingerprint: <code>{keys.aliceFp}</code>
+              {aliceName}&apos;s Key Part — keep secret — fingerprint: <code>{keys.aliceFp}</code>
             </div>
             <div className="output-value">{keys.aliceJson}</div>
             <CopyButton text={keys.aliceJson} />
@@ -116,7 +116,7 @@ export default function Step1KeyGen() {
 
           <div className="output-row">
             <div className="output-label">
-              Bob&apos;s Key Part — keep secret — fingerprint: <code>{keys.bobFp}</code>
+              {bobName}&apos;s Key Part — keep secret — fingerprint: <code>{keys.bobFp}</code>
             </div>
             <div className="output-value">{keys.bobJson}</div>
             <CopyButton text={keys.bobJson} />
@@ -127,7 +127,7 @@ export default function Step1KeyGen() {
           <div className="output-row">
             <div className="output-label">Key fingerprints (safe to display publicly)</div>
             <div className="output-value">
-              {`n: ${keys.nFp}\ng: ${keys.gFp}\np: ${keys.pFp}  ← Alice only\nq: ${keys.qFp}  ← Bob only`}
+              {`n: ${keys.nFp}\ng: ${keys.gFp}\np: ${keys.pFp}  ← ${aliceName} only\nq: ${keys.qFp}  ← ${bobName} only`}
             </div>
           </div>
         </div>
